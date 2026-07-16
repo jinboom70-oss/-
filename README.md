@@ -19,3 +19,11 @@
 
 ```text
 origincar/
+## 环境配置
+
+本项目运行在 OriginCar 小车的 ROS2 工作空间中。
+
+打开小车终端，进入工作空间：
+
+```bash
+cd /userdata/dev_ws
