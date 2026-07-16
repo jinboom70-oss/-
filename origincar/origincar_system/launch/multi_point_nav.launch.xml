@@ -1,0 +1,55 @@
+<launch>
+  <arg name="waypoints_file" default="$(find-pkg-share origincar_system)/config/waypoints.yaml"/>
+  <arg name="start_delay" default="0.5"/>
+  <arg name="retry_delay" default="3.0"/>
+  <arg name="max_goal_retries" default="2"/>
+  <arg name="skip_failed_waypoints" default="true"/>
+  <arg name="action_type" default="ordered_smooth"/>
+  <arg name="pass_radius" default="0.6"/>
+  <arg name="auto_segment_yaw" default="false"/>
+  <arg name="route_direction" default="auto"/>
+  <arg name="enable_qr_direction_select" default="true"/>
+  <arg name="qr_topic" default="/qr_info"/>
+  <arg name="use_qr_parity_direction" default="true"/>
+  <arg name="clockwise_qr_value" default="1"/>
+  <arg name="counterclockwise_qr_value" default="2"/>
+  <arg name="enable_image_analysis_trigger" default="true"/>
+  <arg name="image_analysis_waypoint" default="7"/>
+  <arg name="image_analysis_trigger_topic" default="/person_trigger"/>
+  <arg name="start_image_analyzer" default="true"/>
+  <arg name="image_topic" default="/image"/>
+  <arg name="image_msg_type" default="compressed"/>
+  <arg name="image_analysis_result_topic" default="/image_ai"/>
+
+  <node pkg="origincar_system" exec="multi_point_nav" name="multi_point_navigator" output="screen">
+    <param name="waypoints_file" value="$(var waypoints_file)"/>
+    <param name="start_delay" value="$(var start_delay)"/>
+    <param name="retry_delay" value="$(var retry_delay)"/>
+    <param name="max_goal_retries" value="$(var max_goal_retries)"/>
+    <param name="skip_failed_waypoints" value="$(var skip_failed_waypoints)"/>
+    <param name="frame_id" value="map"/>
+    <param name="base_frame_id" value="base_link"/>
+    <param name="pass_radius" value="$(var pass_radius)"/>
+    <param name="auto_segment_yaw" value="$(var auto_segment_yaw)"/>
+    <param name="action_type" value="$(var action_type)"/>
+    <param name="route_direction" value="$(var route_direction)"/>
+    <param name="enable_qr_direction_select" value="$(var enable_qr_direction_select)"/>
+    <param name="qr_topic" value="$(var qr_topic)"/>
+    <param name="use_qr_parity_direction" value="$(var use_qr_parity_direction)"/>
+    <param name="clockwise_qr_value" value="$(var clockwise_qr_value)"/>
+    <param name="counterclockwise_qr_value" value="$(var counterclockwise_qr_value)"/>
+    <param name="enable_image_analysis_trigger" value="$(var enable_image_analysis_trigger)"/>
+    <param name="image_analysis_waypoint" value="$(var image_analysis_waypoint)"/>
+    <param name="image_analysis_trigger_topic" value="$(var image_analysis_trigger_topic)"/>
+  </node>
+
+  <node if="$(var start_image_analyzer)" pkg="aliyun_image_analyzer" exec="image_analyzer" name="aliyun_image_analyzer" output="screen">
+    <param name="image_topic" value="$(var image_topic)"/>
+    <param name="image_msg_type" value="$(var image_msg_type)"/>
+    <param name="trigger_topic" value="$(var image_analysis_trigger_topic)"/>
+    <param name="trigger_msg_type" value="int32"/>
+    <param name="trigger_value" value="$(var image_analysis_waypoint)"/>
+    <param name="result_topic" value="$(var image_analysis_result_topic)"/>
+    <param name="prompt" value="Identify the key content in the image and output only the final result."/>
+  </node>
+</launch>

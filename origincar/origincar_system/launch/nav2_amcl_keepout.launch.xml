@@ -1,0 +1,50 @@
+<launch>
+  <arg name="use_sim_time" default="False"/>
+  <arg name="use_nav2" default="true"/>
+  <arg name="use_amcl" default="true"/>
+  <arg name="map" default="/userdata/dev_ws/src/origincar/map/race_modify.yaml"/>
+  <arg name="initial_pose_x" default="0.655"/>
+  <arg name="initial_pose_y" default="0.012"/>
+  <arg name="initial_pose_a" default="-3.119"/>
+
+  <node pkg="nav2_map_server" exec="costmap_filter_info_server" name="costmap_filter_info_server" output="screen">
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+    <param name="filter_info_topic" value="/filter_mask_info"/>
+    <param name="type" value="0"/>
+    <param name="mask_topic" value="/filter_mask"/>
+    <param name="base" value="0.0"/>
+    <param name="multiplier" value="1.0"/>
+  </node>
+
+  <node pkg="nav2_map_server" exec="map_server" name="filter_mask_server" output="screen">
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+    <param name="yaml_filename" value="/userdata/dev_ws/src/origincar/map/race_keepout.yaml"/>
+    <param name="topic_name" value="/filter_mask"/>
+    <param name="frame_id" value="map"/>
+  </node>
+
+  <node pkg="nav2_lifecycle_manager" exec="lifecycle_manager" name="lifecycle_manager_keepout" output="screen">
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+    <param name="autostart" value="true"/>
+    <param name="node_names" value="['costmap_filter_info_server', 'filter_mask_server']"/>
+    <param name="bond_timeout" value="10.0"/>
+  </node>
+
+  <timer period="3.0">
+    <include if="$(var use_nav2)" file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
+      <arg name="use_sim_time" value="$(var use_sim_time)"/>
+      <arg name="map" value="$(var map)"/>
+      <arg name="params_file" value="/userdata/dev_ws/src/origincar/origincar_system/config/controller_params_keepout.yaml"/>
+      <arg name="autostart" value="True"/>
+      <arg name="slam" value="False"/>
+      <arg name="use_composition" value="False"/>
+      <arg name="bond_timeout" value="10.0"/>
+    </include>
+  </timer>
+
+  <node if="$(var use_amcl)" pkg="origincar_system" exec="initial_pose_publisher" name="initial_pose_publisher" output="screen">
+    <param name="x" value="$(var initial_pose_x)"/>
+    <param name="y" value="$(var initial_pose_y)"/>
+    <param name="yaw" value="$(var initial_pose_a)"/>
+  </node>
+</launch>

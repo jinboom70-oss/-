@@ -1,0 +1,140 @@
+<launch>
+  <arg name="waypoints_file" default="$(find-pkg-share origincar_system)/config/waypoints.yaml"/>
+  <arg name="linear_speed" default="0.35"/>
+  <arg name="channel_linear_speed" default="0.45"/>
+  <arg name="channel_waypoint_ranges" default=""/>
+  <arg name="max_angular_z" default="1.6"/>
+  <arg name="turn_angular_gain" default="1.4"/>
+  <arg name="turn_min_speed_scale" default="0.45"/>
+  <arg name="reverse_angular_gain" default="1.1"/>
+  <arg name="reverse_min_speed_scale" default="0.30"/>
+  <arg name="reverse_goal_lookahead_distance" default="0.25"/>
+  <arg name="reverse_pass_radius" default="0.25"/>
+  <arg name="enable_reverse_approach_nudge" default="true"/>
+  <arg name="reverse_approach_nudge_waypoint" default="2"/>
+  <arg name="reverse_approach_nudge_distance" default="0.35"/>
+  <arg name="reverse_approach_nudge_angular_z" default="-0.35"/>
+  <arg name="lookahead_distance" default="0.55"/>
+  <arg name="pass_radius" default="0.35"/>
+  <arg name="enable_smooth_keepout_path" default="true"/>
+  <arg name="smooth_path_min_waypoint" default="4"/>
+  <arg name="smooth_path_max_waypoint" default="9"/>
+  <arg name="smooth_path_samples_per_segment" default="10"/>
+  <arg name="smooth_path_keepout_clearance" default="0.22"/>
+  <arg name="smooth_path_keepout_weight" default="0.9"/>
+  <arg name="enable_skip_overshot_waypoints" default="true"/>
+  <arg name="overshot_waypoint_margin" default="0.05"/>
+  <arg name="overshot_waypoint_max_distance" default="0.80"/>
+  <arg name="overshot_next_waypoint_max_distance" default="0.45"/>
+  <arg name="skip_overshot_min_waypoint" default="5"/>
+  <arg name="skip_overshot_max_waypoint" default="9"/>
+  <arg name="obstacle_stop_distance" default="0.22"/>
+  <arg name="obstacle_enable_from_waypoint" default="0"/>
+  <arg name="obstacle_slow_distance" default="0.80"/>
+  <arg name="obstacle_avoid_distance" default="0.60"/>
+  <arg name="front_angle_deg" default="30.0"/>
+  <arg name="enable_keepout_avoidance" default="true"/>
+  <arg name="keepout_mask_topic" default="/filter_mask"/>
+  <arg name="keepout_occupied_threshold" default="50"/>
+  <arg name="keepout_stop_distance" default="0.25"/>
+  <arg name="keepout_slow_distance" default="0.70"/>
+  <arg name="keepout_avoid_distance" default="0.55"/>
+  <arg name="keepout_side_sample_distance" default="0.35"/>
+  <arg name="enable_keepout_hard_stop" default="false"/>
+  <arg name="keepout_min_speed_scale" default="0.45"/>
+  <arg name="backup_trigger_time" default="0.0"/>
+  <arg name="backup_duration" default="0.5"/>
+  <arg name="backup_speed" default="0.12"/>
+  <arg name="backup_angular_z" default="0.35"/>
+  <arg name="backup_stop_distance" default="0.18"/>
+  <arg name="enable_qr_skip_first" default="true"/>
+  <arg name="qr_topic" default="/qr_info"/>
+  <arg name="route_direction" default="auto"/>
+  <arg name="enable_qr_direction_select" default="true"/>
+  <arg name="use_qr_parity_direction" default="true"/>
+  <arg name="clockwise_qr_value" default="1"/>
+  <arg name="counterclockwise_qr_value" default="2"/>
+  <arg name="enable_image_analysis_trigger" default="true"/>
+  <arg name="image_analysis_waypoint" default="7"/>
+  <arg name="image_analysis_trigger_topic" default="/person_trigger"/>
+  <arg name="start_image_analyzer" default="true"/>
+  <arg name="image_topic" default="/image"/>
+  <arg name="image_msg_type" default="compressed"/>
+  <arg name="image_analysis_result_topic" default="/image_ai"/>
+
+  <node pkg="origincar_system" exec="smooth_path_follower" name="smooth_path_follower" output="screen">
+    <param name="waypoints_file" value="$(var waypoints_file)"/>
+    <param name="linear_speed" value="$(var linear_speed)"/>
+    <param name="channel_linear_speed" value="$(var channel_linear_speed)"/>
+    <param name="channel_waypoint_ranges" value="$(var channel_waypoint_ranges)"/>
+    <param name="max_angular_z" value="$(var max_angular_z)"/>
+    <param name="turn_angular_gain" value="$(var turn_angular_gain)"/>
+    <param name="turn_min_speed_scale" value="$(var turn_min_speed_scale)"/>
+    <param name="reverse_angular_gain" value="$(var reverse_angular_gain)"/>
+    <param name="reverse_min_speed_scale" value="$(var reverse_min_speed_scale)"/>
+    <param name="reverse_goal_lookahead_distance" value="$(var reverse_goal_lookahead_distance)"/>
+    <param name="reverse_pass_radius" value="$(var reverse_pass_radius)"/>
+    <param name="enable_reverse_approach_nudge" value="$(var enable_reverse_approach_nudge)"/>
+    <param name="reverse_approach_nudge_waypoint" value="$(var reverse_approach_nudge_waypoint)"/>
+    <param name="reverse_approach_nudge_distance" value="$(var reverse_approach_nudge_distance)"/>
+    <param name="reverse_approach_nudge_angular_z" value="$(var reverse_approach_nudge_angular_z)"/>
+    <param name="lookahead_distance" value="$(var lookahead_distance)"/>
+    <param name="pass_radius" value="$(var pass_radius)"/>
+    <param name="enable_smooth_keepout_path" value="$(var enable_smooth_keepout_path)"/>
+    <param name="smooth_path_min_waypoint" value="$(var smooth_path_min_waypoint)"/>
+    <param name="smooth_path_max_waypoint" value="$(var smooth_path_max_waypoint)"/>
+    <param name="smooth_path_samples_per_segment" value="$(var smooth_path_samples_per_segment)"/>
+    <param name="smooth_path_keepout_clearance" value="$(var smooth_path_keepout_clearance)"/>
+    <param name="smooth_path_keepout_weight" value="$(var smooth_path_keepout_weight)"/>
+    <param name="enable_skip_overshot_waypoints" value="$(var enable_skip_overshot_waypoints)"/>
+    <param name="overshot_waypoint_margin" value="$(var overshot_waypoint_margin)"/>
+    <param name="overshot_waypoint_max_distance" value="$(var overshot_waypoint_max_distance)"/>
+    <param name="overshot_next_waypoint_max_distance" value="$(var overshot_next_waypoint_max_distance)"/>
+    <param name="skip_overshot_min_waypoint" value="$(var skip_overshot_min_waypoint)"/>
+    <param name="skip_overshot_max_waypoint" value="$(var skip_overshot_max_waypoint)"/>
+    <param name="obstacle_enable_from_waypoint" value="$(var obstacle_enable_from_waypoint)"/>
+    <param name="obstacle_stop_distance" value="$(var obstacle_stop_distance)"/>
+    <param name="obstacle_slow_distance" value="$(var obstacle_slow_distance)"/>
+    <param name="obstacle_avoid_distance" value="$(var obstacle_avoid_distance)"/>
+    <param name="front_angle_deg" value="$(var front_angle_deg)"/>
+    <param name="enable_keepout_avoidance" value="$(var enable_keepout_avoidance)"/>
+    <param name="keepout_mask_topic" value="$(var keepout_mask_topic)"/>
+    <param name="keepout_occupied_threshold" value="$(var keepout_occupied_threshold)"/>
+    <param name="keepout_stop_distance" value="$(var keepout_stop_distance)"/>
+    <param name="keepout_slow_distance" value="$(var keepout_slow_distance)"/>
+    <param name="keepout_avoid_distance" value="$(var keepout_avoid_distance)"/>
+    <param name="keepout_side_sample_distance" value="$(var keepout_side_sample_distance)"/>
+    <param name="enable_keepout_hard_stop" value="$(var enable_keepout_hard_stop)"/>
+    <param name="keepout_min_speed_scale" value="$(var keepout_min_speed_scale)"/>
+    <param name="backup_trigger_time" value="$(var backup_trigger_time)"/>
+    <param name="backup_duration" value="$(var backup_duration)"/>
+    <param name="backup_speed" value="$(var backup_speed)"/>
+    <param name="backup_angular_z" value="$(var backup_angular_z)"/>
+    <param name="backup_stop_distance" value="$(var backup_stop_distance)"/>
+    <param name="enable_qr_skip_first" value="$(var enable_qr_skip_first)"/>
+    <param name="qr_topic" value="$(var qr_topic)"/>
+    <param name="route_direction" value="$(var route_direction)"/>
+    <param name="enable_qr_direction_select" value="$(var enable_qr_direction_select)"/>
+    <param name="use_qr_parity_direction" value="$(var use_qr_parity_direction)"/>
+    <param name="clockwise_qr_value" value="$(var clockwise_qr_value)"/>
+    <param name="counterclockwise_qr_value" value="$(var counterclockwise_qr_value)"/>
+    <param name="enable_image_analysis_trigger" value="$(var enable_image_analysis_trigger)"/>
+    <param name="image_analysis_waypoint" value="$(var image_analysis_waypoint)"/>
+    <param name="image_analysis_trigger_topic" value="$(var image_analysis_trigger_topic)"/>
+    <param name="enable_obstacle_avoidance" value="true"/>
+    <param name="frame_id" value="map"/>
+    <param name="base_frame_id" value="base_link"/>
+    <param name="cmd_vel_topic" value="/cmd_vel"/>
+    <param name="scan_topic" value="/scan"/>
+  </node>
+
+  <node if="$(var start_image_analyzer)" pkg="aliyun_image_analyzer" exec="image_analyzer" name="aliyun_image_analyzer" output="screen">
+    <param name="image_topic" value="$(var image_topic)"/>
+    <param name="image_msg_type" value="$(var image_msg_type)"/>
+    <param name="trigger_topic" value="$(var image_analysis_trigger_topic)"/>
+    <param name="trigger_msg_type" value="int32"/>
+    <param name="trigger_value" value="$(var image_analysis_waypoint)"/>
+    <param name="result_topic" value="$(var image_analysis_result_topic)"/>
+    <param name="prompt" value="Identify the key content in the image and output only the final result."/>
+  </node>
+</launch>

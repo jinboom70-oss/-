@@ -1,0 +1,28 @@
+<launch>
+  <arg name="carto_slam" default="false"/>
+  <arg name="start_camera" default="false"/>
+
+  <include file="$(find-pkg-share origincar_base)/launch/base_serial.launch.xml">
+    <arg name="akmcar" value="false"/>
+  </include>
+
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="base_to_link" args="0 0 0 0 0 0 base_footprint base_link"/>
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="base_to_gyro" args="0 0 0 0 0 0 base_footprint gyro_link"/>
+  <node pkg="joint_state_publisher" exec="joint_state_publisher" name="joint_state_publisher"/>
+
+  <include file="$(find-pkg-share origincar_base)/launch/robot_mode_description.launch.xml"/>
+
+  <node unless="$(var carto_slam)" pkg="robot_localization" exec="ekf_node" output="screen">
+    <param from="$(find-pkg-share origincar_base)/config/ekf.yaml"/>
+    <remap from="odometry/filtered" to="odom_combined"/>
+  </node>
+
+  <include file="$(find-pkg-share lslidar_driver)/launch/lsn10_launch.xml"/>
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="link_to_laser" args="0.04 0 0.08 0 0 0 base_link laser_link"/>
+
+  <include if="$(var start_camera)" file="$(find-pkg-share hobot_usb_cam)/launch/hobot_usb_cam.launch.py">
+    <arg name="usb_image_width" value="1920"/>
+    <arg name="usb_image_height" value="1080"/>
+    <arg name="usb_video_device" value="/dev/video0"/>
+  </include>
+</launch>

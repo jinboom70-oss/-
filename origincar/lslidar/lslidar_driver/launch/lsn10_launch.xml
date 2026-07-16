@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="lslidar_driver" exec="lslidar_driver_node" name="lslidar_driver_node" output="screen" emulate_tty="true">
+    <param from="$(find-pkg-share lslidar_driver)/params/lidar_uart_ros2/lsn10.yaml"/>
+  </node>
+</launch>

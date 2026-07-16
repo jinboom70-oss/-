@@ -1,0 +1,26 @@
+<launch>
+  <arg name="akmcar" default="false" description="Use Ackermann command conversion when true"/>
+
+  <node if="$(var akmcar)" pkg="origincar_base" exec="origincar_base_node" output="screen">
+    <param name="usart_port_name" value="/dev/ttyACM0"/>
+    <param name="serial_baud_rate" value="115200"/>
+    <param name="robot_frame_id" value="base_footprint"/>
+    <param name="odom_frame_id" value="odom_combined"/>
+    <param name="cmd_vel" value="cmd_vel"/>
+    <param name="product_number" value="0"/>
+    <param name="akm_cmd_vel" value="ackermann_cmd"/>
+    <remap from="/cmd_vel" to="cmd_vel"/>
+  </node>
+
+  <node if="$(var akmcar)" pkg="origincar_base" exec="cmd_vel_to_ackermann_drive" name="cmd_vel_to_ackermann_drive" output="screen"/>
+
+  <node unless="$(var akmcar)" pkg="origincar_base" exec="origincar_base_node" output="screen">
+    <param name="usart_port_name" value="/dev/ttyACM0"/>
+    <param name="serial_baud_rate" value="115200"/>
+    <param name="robot_frame_id" value="base_footprint"/>
+    <param name="odom_frame_id" value="odom_combined"/>
+    <param name="cmd_vel" value="cmd_vel"/>
+    <param name="product_number" value="0"/>
+    <param name="akm_cmd_vel" value="none"/>
+  </node>
+</launch>
