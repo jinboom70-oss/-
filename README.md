@@ -1,3 +1,21 @@
-[Uploading README.md…]()
-source install/setup.bash
-bash /userdata/dev_ws/src/origincar/origincar_system/scripts/start_qr_navigation.sh
+# Origincar 智能小车项目
+
+## 项目简介
+
+本项目基于地瓜机器人开发板和 OriginCar 智能小车平台开发，
+实现智能小车的环境感知、运动控制和二维码导航等功能。
+
+## 主要功能
+
+- 智能小车运动控制
+- 摄像头图像采集
+- 二维码识别与导航
+- ROS2 节点通信
+- 自动路径规划与任务执行
+
+## 项目目录
+
+项目主要代码位于：
+
+```text
+origincar/
